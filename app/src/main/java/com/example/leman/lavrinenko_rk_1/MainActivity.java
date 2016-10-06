@@ -4,18 +4,21 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import java.util.Objects;
+
 import ru.mail.weather.lib.*;
 
 
 public class MainActivity extends AppCompatActivity {
 
-    BroadcastReceiver br;
+    private BroadcastReceiver br;
 
     private final View.OnClickListener onCityClick = new View.OnClickListener() {
         @Override
@@ -46,69 +49,63 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
 
-        findViewById(R.id.button).setOnClickListener(onCityClick);
-        findViewById(R.id.button2).setOnClickListener(onUpdateClick);
-        findViewById(R.id.button3).setOnClickListener(onCancelUpdateClick);
+        findViewById(R.id.cityButton).setOnClickListener(onCityClick);
+        findViewById(R.id.startUpdateBUtton).setOnClickListener(onUpdateClick);
+        findViewById(R.id.endUpdateButton).setOnClickListener(onCancelUpdateClick);
 
         City city = WeatherStorage.getInstance(MainActivity.this)
                 .getCurrentCity();
-        ((Button) findViewById(R.id.button)).setText(city.toString());
+        ((Button) findViewById(R.id.cityButton)).setText(city.toString());
 
         Weather weather = WeatherStorage.getInstance(MainActivity.this)
                 .getLastSavedWeather(city);
         if (weather != null) {
-            TextView textView = ((TextView) findViewById(R.id.textView));
-            Integer temp = weather.getTemperature();
-            textView.setText(String.valueOf(temp));
+            setWeatherOnTextView(weather);
         }
 
-        WeatherIntentService.startActionFoo(this);
+        WeatherIntentService.start(this);
+    }
 
+    private void setWeatherOnTextView(Weather weather) {
+        TextView textView = ((TextView) findViewById(R.id.infoTextView));
+        Integer temp = weather.getTemperature();
+        String description = weather.getDescription();
+        String fullInfo = String.valueOf(temp) + "C  " + description;
+        textView.setText(fullInfo);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
         br = new BroadcastReceiver() {
             public void onReceive(Context context, Intent intent) {
                 if (intent != null) {
-                    if (intent.getAction() == Actions.LOADED.toString()) {
+                    if (intent.getAction().equals(Actions.LOADED.toString())) {
                         City city = WeatherStorage.getInstance(MainActivity.this)
                                 .getCurrentCity();
                         Weather weather = WeatherStorage.getInstance(MainActivity.this).getLastSavedWeather(city);
-                        TextView textView = ((TextView) findViewById(R.id.textView));
-                        Integer temp = weather.getTemperature();
-                        textView.setText(String.valueOf(temp));
+                        if (weather != null) {
+                            setWeatherOnTextView(weather);
+                        }
                     }
                 }
             }
         };
 
         IntentFilter intFilt = new IntentFilter(Actions.LOADED.toString());
-        registerReceiver(br, intFilt);
+        LocalBroadcastManager.getInstance(this).registerReceiver(br, intFilt);
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
+    protected void onStop() {
+        super.onStop();
         unregisterReceiver(br);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        WeatherIntentService.startActionFoo(this);
+        WeatherIntentService.start(this);
 
-    }
-
-    @Override
-    protected void onNewIntent(Intent intent) {
-        super.onNewIntent(intent);
-        City city = WeatherStorage.getInstance(MainActivity.this)
-                .getCurrentCity();
-        Weather weather = WeatherStorage.getInstance(MainActivity.this).getLastSavedWeather(city);
-        TextView textView = ((TextView) findViewById(R.id.textView));
-        Integer temp = weather.getTemperature();
-        textView.setText(String.valueOf(temp));
     }
 }

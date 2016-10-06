@@ -3,6 +3,7 @@ package com.example.leman.lavrinenko_rk_1;
 import android.app.IntentService;
 import android.content.Intent;
 import android.content.Context;
+import android.support.v4.content.LocalBroadcastManager;
 
 import java.io.IOException;
 
@@ -17,7 +18,7 @@ public class WeatherIntentService extends IntentService {
         super("WeatherIntentService");
     }
 
-    public static void startActionFoo(Context context) {
+    public static void start(Context context) {
         Intent intent = new Intent(context, WeatherIntentService.class);
         context.startService(intent);
     }
@@ -25,13 +26,15 @@ public class WeatherIntentService extends IntentService {
     @Override
     protected void onHandleIntent(Intent intent) {
         if (intent != null) {
-            if (intent.getAction() == Actions.LOAD.toString()) {
+            if (intent.getAction().equals(Actions.LOAD.toString())) {
                 City city = WeatherStorage.getInstance(WeatherIntentService.this)
                         .getCurrentCity();
                 try {
                     Weather weather = WeatherUtils.getInstance().loadWeather(city);
-                    WeatherStorage.getInstance(WeatherIntentService.this).saveWeather(city, weather);
-                    sendBroadcast(new Intent((Actions.LOADED.toString())));
+                    if (weather != null) {
+                        WeatherStorage.getInstance(WeatherIntentService.this).saveWeather(city, weather);
+                        LocalBroadcastManager.getInstance(this).sendBroadcast(new Intent((Actions.LOADED.toString())));
+                    }
                 } catch (IOException e) {
                     e.printStackTrace();
                 }

@@ -13,7 +13,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Vice city"
-        android:id="@+id/button"
+        android:id="@+id/cityButton"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="150dp" />
 
@@ -21,24 +21,24 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Обновлять в фоне"
-        android:id="@+id/button2"
-        android:layout_below="@+id/button"
+        android:id="@+id/startUpdateBUtton"
+        android:layout_below="@+id/cityButton"
         android:layout_centerHorizontal="true" />
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Не обновлять в фоне"
-        android:id="@+id/button3"
-        android:layout_below="@+id/button2"
+        android:id="@+id/endUpdateButton"
+        android:layout_below="@+id/startUpdateBUtton"
         android:layout_centerHorizontal="true" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="-31 "
-        android:id="@+id/textView"
-        android:layout_alignBottom="@+id/button"
+        android:id="@+id/infoTextView"
+        android:layout_alignBottom="@+id/cityButton"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="51dp" />
 </RelativeLayout>

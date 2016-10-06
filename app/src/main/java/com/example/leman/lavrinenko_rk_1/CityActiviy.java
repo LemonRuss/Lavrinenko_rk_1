@@ -1,6 +1,5 @@
 package com.example.leman.lavrinenko_rk_1;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -26,11 +25,11 @@ public class CityActiviy extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activiy_city);
 
-        findViewById(R.id.button4).setOnClickListener(Back);
-        findViewById(R.id.button5).setOnClickListener(Back);
-        findViewById(R.id.button6).setOnClickListener(Back);
-        findViewById(R.id.button7).setOnClickListener(Back);
-        findViewById(R.id.button8).setOnClickListener(Back);
+        findViewById(R.id.firstCityButton).setOnClickListener(Back);
+        findViewById(R.id.secondCityButton).setOnClickListener(Back);
+        findViewById(R.id.thirdCityButton).setOnClickListener(Back);
+        findViewById(R.id.fourthCityButton).setOnClickListener(Back);
+        findViewById(R.id.fithCityButton).setOnClickListener(Back);
 
     }
 
